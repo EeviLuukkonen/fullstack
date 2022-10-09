@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
+
+const Notification = ({ message, type }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className={type}>
+      {message}
+    </div>
+  )
+}
 
 const PersonForm = (props) => {
   return (
@@ -51,6 +63,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [SuccessMessage, setSuccessMessage] = useState(null)
+  const [ErrorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -63,6 +77,19 @@ const App = () => {
 
   const namesToShow = persons.filter(person => 
     person.name.toLowerCase().includes(filter.toLowerCase()))
+
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const handleFilter = (event) => {
+    console.log(event.target.value)
+    setFilter(event.target.value)
+  }
 
   const addName = (event) => {
     event.preventDefault()
@@ -78,8 +105,19 @@ const App = () => {
           }
           personService
             .put(`http://localhost:3001/persons/${exists.id}`, changedObject)
+            .catch(error => {
+              setErrorMessage(`Information of ${newName} has already been removed from server`)
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 3000)
+              setPersons(persons.filter(p => p.id !== exists.id))
+            })
             .then(response => {
               setPersons(persons.map(p => p.id !== exists.id ? p : response.data))
+              setSuccessMessage(`Changed the number of ${newName} to ${newNumber}`)
+              setTimeout(() => {
+                setSuccessMessage(null)
+              }, 3000)
             })
         }
     } else {
@@ -91,23 +129,14 @@ const App = () => {
         .create(nameObject)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setSuccessMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 3000)
         })
     }
     setNewName('')
     setNewNumber('')
-  }
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-
-  const handleFilter = (event) => {
-    console.log(event.target.value)
-    setFilter(event.target.value)
   }
 
   const deletePerson = (person) => {
@@ -117,13 +146,19 @@ const App = () => {
       .remove(`http://localhost:3001/persons/${person.id}`)
       .then(response => {
         setPersons(persons.filter(p => p.id !== person.id))
+        setSuccessMessage(`Deleted ${person.name}`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 3000)
       })
     }
-  }  
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={SuccessMessage} type='success'/>
+      <Notification message={ErrorMessage} type='error' />
       <Filter filter={filter} handleFilter={handleFilter}/>
       <h2>Add a new</h2>
       <PersonForm 
