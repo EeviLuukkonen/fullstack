@@ -13,4 +13,8 @@ const remove = (url) => {
     return axios.delete(url)
 }
 
-export default { getAll, create, remove }
+const put = (url, changedObject) => {
+    return axios.put(url, changedObject)
+}
+
+export default { getAll, create, remove, put }

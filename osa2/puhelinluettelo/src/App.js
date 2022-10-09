@@ -28,7 +28,7 @@ const Persons = ({ namesToShow, deletePerson }) => {
   return (
     <div>
     {namesToShow.map(person => 
-      <p key={person.name}> 
+      <p key={person.id}> 
         {person.name} {person.number}
         <button onClick={() => deletePerson(person)}>delete</button>
       </p>
@@ -66,13 +66,27 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    const nameObject = {
-      name: newName,
-      number: newNumber
-    }
-    if (persons.find(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+    const exists = persons.find(person => person.name === newName)
+    if (exists) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))
+        {
+          console.log('korvataan uudella')
+          const changedObject = {
+            name: newName,
+            number: newNumber,
+            id: exists.id
+          }
+          personService
+            .put(`http://localhost:3001/persons/${exists.id}`, changedObject)
+            .then(response => {
+              setPersons(persons.map(p => p.id !== exists.id ? p : response.data))
+            })
+        }
     } else {
+      const nameObject = {
+        name: newName,
+        number: newNumber
+      }
       personService
         .create(nameObject)
         .then(response => {
