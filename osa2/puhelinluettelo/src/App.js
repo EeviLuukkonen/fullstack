@@ -104,7 +104,7 @@ const App = () => {
             id: exists.id
           }
           personService
-            .put(`http://localhost:3001/persons/${exists.id}`, changedObject)
+            .put(`http://localhost:3001/api/persons/${exists.id}`, changedObject)
             .catch(error => {
               setErrorMessage(`Information of ${newName} has already been removed from server`)
               setTimeout(() => {
@@ -143,7 +143,7 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`))
     {
       personService
-      .remove(`http://localhost:3001/persons/${person.id}`)
+      .remove(`http://localhost:3001/api/persons/${person.id}`)
       .then(response => {
         setPersons(persons.filter(p => p.id !== person.id))
         setSuccessMessage(`Deleted ${person.name}`)
