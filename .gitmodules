@@ -1,3 +1,3 @@
 [submodule "fullstack-part3"]
-	path = fullstack-part3
+	path = osa3/fullstack-part3
 	url = https://github.com/EeviLuukkonen/fullstack-part3.git
