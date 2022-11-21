@@ -60,6 +60,5 @@ describe('favourite blog', () => {
   test('when list has many blogs is correct', () => {
     result = listHelper.favouriteBlog(listWithThreeBlogs)
     expect(result).toEqual(listWithThreeBlogs[2])
-    console.log(result, listWithThreeBlogs[2])
   })
 })
