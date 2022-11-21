@@ -9,13 +9,13 @@ const initialBlogs = [
         "author": "minä",
         "title": "elämäni",
         "url": "www.com",
-        "votes": 0
+        "likes": 0
     },
     {
         "author": "jaakko",
         "title": "sirkka",
         "url": "www.ho",
-        "votes": 3
+        "likes": 3
     }
 ]
 
@@ -38,6 +38,34 @@ test('blogs are returned as json', async () => {
         .get('/api/blogs')
         .expect(200)
         .expect('Content-Type', /application\/json/)
+})
+
+test('blogs have field called id', async () => {
+    const response = await api.get('/api/blogs')
+    const ids = response.body.map(r => r.id)
+
+    expect(ids).toBeDefined()
+})
+
+test('a valid blog can be added', async () => {
+    const newBlog = {
+        "author": "uusi",
+        "title": "testiblogi",
+        "url": "www.jee.com",
+        "likes": 13
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    const response = await api.get('/api/blogs')
+    const titles = response.body.map(r => r.title)
+
+    expect(response.body).toHaveLength(initialBlogs.length+1)
+    expect(titles).toContain('testiblogi')
 })
 
 afterAll(() => {

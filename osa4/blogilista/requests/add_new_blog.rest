@@ -5,5 +5,5 @@ Content-Type: application/json
     "author": "minä",
     "title": "elämäni",
     "url": "www.com",
-    "votes": 0
+    "likes": 4
 }
