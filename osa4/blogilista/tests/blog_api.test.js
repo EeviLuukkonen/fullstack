@@ -88,6 +88,22 @@ test('if likes isn`t defined it`s value is 0', async () => {
     expect(nolikes.likes).toBe(0)
 })
 
+test('unvalid blog isn`t added', async () => {
+    const newBlog = {
+        "author": "test",
+        "likes": 2
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
