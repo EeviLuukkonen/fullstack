@@ -107,7 +107,7 @@ describe('addition of a new blog', () => {
     })
 })
 
-describe('deletion of a note', () => {
+describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
         const response = await api.get('/api/blogs')
         const blogToDelete = response.body.find(blog => blog.author === "jaakko")
@@ -124,6 +124,27 @@ describe('deletion of a note', () => {
         const titles = blogsAtEnd.body.map(r => r.title)
     
         expect(titles).not.toContain(blogToDelete.title)
+    })
+})
+
+describe('updating the number of likes on a blog', () => {
+    test('succeeds if the data is valid', async () => {
+        const response = await api.get('/api/blogs')
+        const blogToUpdate = response.body.find(blog => blog.author === "minä")
+        console.log(blogToUpdate)
+        blogToUpdate.likes = 69
+        console.log(blogToUpdate)
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(blogToUpdate)
+            .expect(200)
+        
+        const updatedBlogs = await api.get('/api/blogs')
+        
+        const likes = updatedBlogs.body.map(r => r.likes)
+
+        expect(likes).toContain(69)
     })
 })
 
