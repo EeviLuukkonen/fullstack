@@ -7,7 +7,6 @@ test('dummy returns one', () => {
   expect(result).toBe(1)
 })
 
-
 describe('total likes', () => {
   const emptyList = []
   const listWithOneBlog = [
