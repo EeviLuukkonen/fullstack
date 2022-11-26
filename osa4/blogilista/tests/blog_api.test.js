@@ -3,27 +3,13 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
-
-const initialBlogs = [
-    {
-        "author": "minä",
-        "title": "elämäni",
-        "url": "www.com",
-        "likes": 0
-    },
-    {
-        "author": "jaakko",
-        "title": "sirkka",
-        "url": "www.ho",
-        "likes": 3
-    }
-]
+const helper = require('./test_helper')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
+    let blogObject = new Blog(helper.initialBlogs[0])
     await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
+    blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
   })
 
@@ -31,7 +17,7 @@ describe('when there are initially some blogs saved', () => {
     test('there are right amount of blogs', async () => {
         const response = await api.get('/api/blogs')
     
-        expect(response.body).toHaveLength(initialBlogs.length)
+        expect(response.body).toHaveLength(helper.initialBlogs.length)
     })
     
     test('blogs are returned as json', async () => {
@@ -64,10 +50,10 @@ describe('addition of a new blog', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/)
         
-        const response = await api.get('/api/blogs')
-        const titles = response.body.map(r => r.title)
+        const blogsAtEnd = await helper.blogsInDb()
+        const titles = blogsAtEnd.map(r => r.title)
     
-        expect(response.body).toHaveLength(initialBlogs.length+1)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length+1)
         expect(titles).toContain('testiblogi')
     })
 
@@ -84,8 +70,8 @@ describe('addition of a new blog', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/)
         
-        const response = await api.get('/api/blogs')
-        const nolikes = response.body.find(r => r.author === "testNoLikes")
+        const blogsAtEnd = await helper.blogsInDb()
+        const nolikes = blogsAtEnd.find(r => r.author === "testNoLikes")
     
         expect(nolikes.likes).toBe(0)
     })
@@ -101,27 +87,27 @@ describe('addition of a new blog', () => {
             .send(newBlog)
             .expect(400)
     
-        const response = await api.get('/api/blogs')
+        const blogsAtEnd = await helper.blogsInDb()
     
-        expect(response.body).toHaveLength(initialBlogs.length)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
 })
 
 describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
-        const response = await api.get('/api/blogs')
-        const blogToDelete = response.body.find(blog => blog.author === "jaakko")
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToDelete = blogsAtStart.find(blog => blog.author === "jaakko")
         console.log(blogToDelete)
     
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
             .expect(204)
         
-        const blogsAtEnd = await api.get('/api/blogs')
+        const blogsAtEnd = await helper.blogsInDb()
     
-        expect(blogsAtEnd.body).toHaveLength(initialBlogs.length-1)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length-1)
     
-        const titles = blogsAtEnd.body.map(r => r.title)
+        const titles = blogsAtEnd.map(r => r.title)
     
         expect(titles).not.toContain(blogToDelete.title)
     })
@@ -129,20 +115,18 @@ describe('deletion of a blog', () => {
 
 describe('updating the number of likes on a blog', () => {
     test('succeeds if the data is valid', async () => {
-        const response = await api.get('/api/blogs')
-        const blogToUpdate = response.body.find(blog => blog.author === "minä")
-        console.log(blogToUpdate)
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToUpdate = blogsAtStart.find(blog => blog.author === "minä")
         blogToUpdate.likes = 69
-        console.log(blogToUpdate)
 
         await api
             .put(`/api/blogs/${blogToUpdate.id}`)
             .send(blogToUpdate)
             .expect(200)
         
-        const updatedBlogs = await api.get('/api/blogs')
+        const updatedBlogs = await helper.blogsInDb()
         
-        const likes = updatedBlogs.body.map(r => r.likes)
+        const likes = updatedBlogs.map(r => r.likes)
 
         expect(likes).toContain(69)
     })
