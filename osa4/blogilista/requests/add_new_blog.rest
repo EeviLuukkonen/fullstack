@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhYWphIiwiaWQiOiI2MzgzN2FiNjQ1YmZmMjI4ZWNlOWUxMDciLCJpYXQiOjE2Njk1NjI1MjF9.b2-5Iuw6UgIAWwzNLm4tvtclGfUYDZzTWwfncq4FrUI
 
 {
-    "author": "testi2",
-    "title": "kayttajan ekakayttaja toinen blogi",
+    "author": "dpfidpo",
+    "title": "jfddfd",
     "url": "www.com",
-    "user": "63822bf5fa9d6472aa9fe331",
     "likes": 4
 }
