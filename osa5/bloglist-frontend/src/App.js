@@ -48,7 +48,7 @@ const App = () => {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage('')
-      }, 3000)
+      }, 2000)
     }
   }
 
@@ -60,11 +60,12 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     const data = await blogService.create(blogObject)
+    console.log(data)
     setBlogs(blogs.concat(data));
     setSuccessmessage(`New blog ${blogObject.title} by ${blogObject.author} added`)
     setTimeout(() => {
       setSuccessmessage('')
-    }, 3000)
+    }, 2000)
   }
 
   const likeBlog = async (blogObject) => {
@@ -78,6 +79,23 @@ const App = () => {
     setBlogs(blogs.map(b => b.id === blog.id ? blog : b))
     console.log(blogs)
   }
+
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Do you want to remove ${blog.title}?`)) {
+      try {
+        await blogService.deleteBlog(blog)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        setSuccessmessage(`Blog ${blog.title} removed!`)
+        setTimeout(() => {
+          setSuccessmessage('')
+        }, 1000)
+      } catch (exception) {
+        setErrorMessage('error deleting the blog!')
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 2000)
+      }
+  }}
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -128,9 +146,15 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
         </Togglable>
       </div>
-      {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={likeBlog}/>
-      )}
+      {blogs.sort((a,b) => b.likes - a.likes).map(blog => (
+      <Blog 
+          key={blog.id} 
+          blog={blog} 
+          handleLike={likeBlog} 
+          handleRemove={handleRemove} 
+          user={user.name}
+      />))
+      }
     </div>
   )
 }
