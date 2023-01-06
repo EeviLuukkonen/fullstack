@@ -1,15 +1,15 @@
 import '../index.css'
 
 const Notification = ({ message, type }) => {
-    if (message === '') {
-      return null
-    }
-  
-    return (
-      <div className={type}>
-        {message}
-      </div>
-    )
+  if (message === '') {
+    return null
   }
-  
-  export default Notification
+
+  return (
+    <div className={type}>
+      {message}
+    </div>
+  )
+}
+
+export default Notification

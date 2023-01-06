@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     const data = await blogService.create(blogObject)
     console.log(data)
-    setBlogs(blogs.concat(data));
+    setBlogs(blogs.concat(data))
     setSuccessmessage(`New blog ${blogObject.title} by ${blogObject.author} added`)
     setTimeout(() => {
       setSuccessmessage('')
@@ -95,13 +95,13 @@ const App = () => {
           setErrorMessage('')
         }, 2000)
       }
-  }}
+    }}
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -110,7 +110,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -127,7 +127,7 @@ const App = () => {
         <Notification message={errorMessage} type="error"/>
         <Notification message={successMessage} type="success"/>
         <h2>Log in to application</h2>
-          {loginForm()}
+        {loginForm()}
       </div>
     )
   }
@@ -138,7 +138,7 @@ const App = () => {
       <Notification message={errorMessage} type="error" />
       <Notification message={successMessage} type="success"/>
       <p>
-        {user.name} logged in 
+        {user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
       <div>
@@ -147,13 +147,13 @@ const App = () => {
         </Togglable>
       </div>
       {blogs.sort((a,b) => b.likes - a.likes).map(blog => (
-      <Blog 
-          key={blog.id} 
-          blog={blog} 
-          handleLike={likeBlog} 
-          handleRemove={handleRemove} 
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleLike={likeBlog}
+          handleRemove={handleRemove}
           user={user.name}
-      />))
+        />))
       }
     </div>
   )

@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState } from 'react'
+import propTypes from 'prop-types'
 
 const Blog = ({ blog, handleLike, handleRemove, user }) => {
   const [view, setView] = useState(false)
@@ -32,13 +33,20 @@ const Blog = ({ blog, handleLike, handleRemove, user }) => {
       <br/>{blog.author}
       <br/>{blog.url}
       <br/>likes: {blog.likes}
-        <button onClick={() => handleLike(blog)}>like</button>
+      <button onClick={() => handleLike(blog)}>like</button>
       <br/>
-        {user === blog.user.name && (
-          <button onClick={() => handleRemove(blog)}>remove</button>
-        )}
+      {user === blog.user.name && (
+        <button onClick={() => handleRemove(blog)}>remove</button>
+      )}
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: propTypes.object.isRequired,
+  handleLike: propTypes.func.isRequired,
+  handleRemove: propTypes.func.isRequired,
+  user: propTypes.string.isRequired
 }
 
 export default Blog
