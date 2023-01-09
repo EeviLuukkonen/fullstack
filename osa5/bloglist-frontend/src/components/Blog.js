@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import propTypes from 'prop-types'
 
-const Blog = ({ blog, handleLike, handleRemove, user }) => {
+const Blog = ({ blog, handleLike, handleRemove, showRemove }) => {
   const [view, setView] = useState(false)
 
   const toggleView = () => {
@@ -19,7 +19,7 @@ const Blog = ({ blog, handleLike, handleRemove, user }) => {
 
   if (!view) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} >
         {blog.title} {blog.author}
         <button onClick={toggleView}>view</button>
       </div>
@@ -27,15 +27,16 @@ const Blog = ({ blog, handleLike, handleRemove, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      {blog.title}
+    <div style={blogStyle} className="viewBlogContent">
+      <b>Title: </b>{blog.title}
       <button onClick={toggleView}>hide</button>
-      <br/>{blog.author}
-      <br/>{blog.url}
-      <br/>likes: {blog.likes}
+      <br/><b>Author: </b>{blog.author}
+      <br/><b>Url: </b>{blog.url}
+      <br/><b>Added by: </b>{blog.user.name}
+      <br/><b>Likes: </b>{blog.likes}
       <button onClick={() => handleLike(blog)}>like</button>
       <br/>
-      {user === blog.user.name && (
+      {showRemove && (
         <button onClick={() => handleRemove(blog)}>remove</button>
       )}
     </div>
@@ -46,7 +47,7 @@ Blog.propTypes = {
   blog: propTypes.object.isRequired,
   handleLike: propTypes.func.isRequired,
   handleRemove: propTypes.func.isRequired,
-  user: propTypes.string.isRequired
+  showRemove: propTypes.bool.isRequired
 }
 
 export default Blog

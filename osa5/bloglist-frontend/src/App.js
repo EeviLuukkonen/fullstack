@@ -69,15 +69,12 @@ const App = () => {
   }
 
   const likeBlog = async (blogObject) => {
-    console.log(blogs)
     const blog = {
       ...blogObject,
       likes: blogObject.likes+1
     }
     await blogService.likeBlog(blog)
-    console.log(blog)
     setBlogs(blogs.map(b => b.id === blog.id ? blog : b))
-    console.log(blogs)
   }
 
   const handleRemove = async (blog) => {
@@ -152,7 +149,7 @@ const App = () => {
           blog={blog}
           handleLike={likeBlog}
           handleRemove={handleRemove}
-          user={user.name}
+          showRemove={user.name === blog.user.name}
         />))
       }
     </div>
