@@ -4,7 +4,9 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 const AnecdoteList = (props) => {
   const anecdotes = useSelector(state => {
     if ( state.filter === '' ) {
-      return state.anecdotes.sort((a, b) => b.votes - a.votes)
+      const anecdotes = [...state.anecdotes]
+      console.log(anecdotes)
+      return anecdotes.sort((a, b) => b.votes - a.votes)
     }
     return state.anecdotes.filter(anecdote => 
       anecdote.content.toLowerCase().includes(state.filter.toLowerCase()))
