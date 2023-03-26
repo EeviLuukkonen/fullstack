@@ -1,3 +1,3 @@
 # Fullstack
 
-Fullstack Open 2022
+Fullstack Open course 2022
