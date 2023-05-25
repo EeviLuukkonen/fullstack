@@ -1,0 +1,71 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom hooks are awesome"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "ette",
+      "id": 3
+    },
+    {
+      "content": "s",
+      "id": 4
+    },
+    {
+      "content": "sss",
+      "id": 5
+    },
+    {
+      "content": "srr",
+      "id": 6
+    },
+    {
+      "content": "ssa",
+      "id": 7
+    },
+    {
+      "content": "ssadf",
+      "id": 8
+    },
+    {
+      "content": "a",
+      "id": 9
+    },
+    {
+      "content": "a",
+      "id": 10
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "Matti Luukkainen",
+      "number": "040-12344565"
+    },
+    {
+      "id": 2,
+      "name": "Tarja Halonen",
+      "number": "040-2223334"
+    },
+    {
+      "name": "s",
+      "number": "s",
+      "id": 3
+    },
+    {
+      "name": "eevi",
+      "number": "123",
+      "id": 4
+    },
+    {
+      "name": "ssf",
+      "number": "wvfd",
+      "id": 5
+    }
+  ]
+}
