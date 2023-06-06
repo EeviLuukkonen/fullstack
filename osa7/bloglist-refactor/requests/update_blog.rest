@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/636ce70ca6fc1b682a866fcb
+Content-Type: application/json
+
+{
+    "author": "pelle hermanni",
+    "title": "uranus",
+    "url": "www.he",
+    "likes": 69
+}
