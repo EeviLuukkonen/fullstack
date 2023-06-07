@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -7,9 +7,9 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
+import { setBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const blogFormRef = useRef()
 
   const [username, setUsername] = useState('')
@@ -18,11 +18,16 @@ const App = () => {
 
   const dispatch = useDispatch()
 
+  const blogs = useSelector(state => {
+    const blogs = [...state.blogs]
+    return blogs
+  })
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      dispatch(setBlogs(blogs))
     )
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -57,12 +62,8 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (blogObject) => {
+  const toggle = () => {
     blogFormRef.current.toggleVisibility()
-    const data = await blogService.create(blogObject)
-    console.log(data)
-    setBlogs(blogs.concat(data))
-    dispatch(setNotification(`New blog ${blogObject.title} by ${blogObject.author} added`, 4, 'success'))
   }
 
   const likeBlog = async (blogObject) => {
@@ -131,7 +132,7 @@ const App = () => {
       </p>
       <div>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
+          <BlogForm toggle={toggle} />
         </Togglable>
       </div>
       {blogs.sort((a,b) => b.likes - a.likes).map(blog => (
