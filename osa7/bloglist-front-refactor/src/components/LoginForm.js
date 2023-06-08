@@ -6,6 +6,7 @@ const LoginForm = ({ onLogin }) => {
 
   const handleLogin = (event) => {
     event.preventDefault()
+    console.log(username, password)
     onLogin(username, password)
   }
 

@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import blogService from './services/blogs'
-import loginService from './services/login'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification'
@@ -10,53 +8,30 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 
 import { setNotification } from './reducers/notificationReducer'
-import { setBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { likeBlog, deleteBlog, initializeBlogs } from './reducers/blogReducer'
+import { initializeUser, loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const blogFormRef = useRef()
-  const [user, setUser] = useState(null)
-
   const dispatch = useDispatch()
 
+  const user = useSelector((state) => state.user)
   const blogs = useSelector(state => {
     const blogs = [...state.blogs]
     return blogs
   })
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      dispatch(setBlogs(blogs))
-    )
+    dispatch(initializeBlogs())
+    dispatch(initializeUser())
   }, [dispatch])
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   const handleLogin = async (username, password) => {
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-      window.localStorage.setItem(
-        'loggedUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
-      dispatch(setNotification(`logged in with ${user.name}`, 2, 'success'))
-    } catch (exception) {
-      dispatch(setNotification('wrong credentials', 2, 'error'))
-    }
+    dispatch(loginUser(username, password))
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
   const toggle = () => {
@@ -75,7 +50,7 @@ const App = () => {
     dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
   }
 
-  if (user === null) {
+  if (!user) {
     return (
       <div>
         <Notification />
