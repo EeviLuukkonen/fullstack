@@ -7,9 +7,14 @@ const getAll = async () => {
   return response.data
 }
 
-const likeBlog = async blog => {
+const likeBlog = async blogObject => {
+  const blog = {
+    ...blogObject,
+    likes: blogObject.likes+1
+  }
   const url = baseUrl + '/' + blog.id
   await axios.put(url, blog)
+  return blog
 }
 
 const deleteBlog = async blog => {

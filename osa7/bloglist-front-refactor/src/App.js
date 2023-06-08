@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+
+import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import LoginForm from './components/LoginForm'
+
 import { setNotification } from './reducers/notificationReducer'
-import { setBlogs } from './reducers/blogReducer'
+import { setBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
   const blogFormRef = useRef()
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
@@ -38,8 +38,7 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({
         username, password,
@@ -49,8 +48,6 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       dispatch(setNotification(`logged in with ${user.name}`, 2, 'success'))
     } catch (exception) {
       dispatch(setNotification('wrong credentials', 2, 'error'))
@@ -66,58 +63,23 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
   }
 
-  const likeBlog = async (blogObject) => {
-    const blog = {
-      ...blogObject,
-      likes: blogObject.likes+1
-    }
-    await blogService.likeBlog(blog)
-    setBlogs(blogs.map(b => b.id === blog.id ? blog : b))
+  const like = (blogObject) => {
+    dispatch(likeBlog(blogObject))
   }
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Do you want to remove ${blog.title}?`)) {
-      try {
-        await blogService.deleteBlog(blog)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
-        dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
-      } catch (exception) {
+      dispatch(deleteBlog(blog)).catch(() => {
         dispatch(setNotification('error deleting the blog!', 2, 'error'))
-      }}
+      })}
+    dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
   }
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          id='username'
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id='password'
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button id="login-button" type="submit">login</button>
-    </form>
-  )
 
   if (user === null) {
     return (
       <div>
         <Notification />
-        <h2>Log in to application</h2>
-        {loginForm()}
+        <LoginForm onLogin={handleLogin}/>
       </div>
     )
   }
@@ -139,7 +101,7 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          handleLike={likeBlog}
+          handleLike={like}
           handleRemove={handleRemove}
           showRemove={user.name === blog.user.name}
         />))
