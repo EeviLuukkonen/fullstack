@@ -6,10 +6,11 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
+import Users from './components/Users'
 
-import { setNotification } from './reducers/notificationReducer'
-import { likeBlog, deleteBlog, initializeBlogs } from './reducers/blogReducer'
-import { initializeUser, loginUser, logoutUser } from './reducers/userReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUser, logoutUser } from './reducers/userReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -24,37 +25,18 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs())
     dispatch(initializeUser())
+    dispatch(initializeUsers())
   }, [dispatch])
-
-  const handleLogin = async (username, password) => {
-    dispatch(loginUser(username, password))
-  }
-
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
 
   const toggle = () => {
     blogFormRef.current.toggleVisibility()
-  }
-
-  const like = (blogObject) => {
-    dispatch(likeBlog(blogObject))
-  }
-
-  const handleRemove = async (blog) => {
-    if (window.confirm(`Do you want to remove ${blog.title}?`)) {
-      dispatch(deleteBlog(blog)).catch(() => {
-        dispatch(setNotification('error deleting the blog!', 2, 'error'))
-      })}
-    dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
   }
 
   if (!user) {
     return (
       <div>
         <Notification />
-        <LoginForm onLogin={handleLogin}/>
+        <LoginForm />
       </div>
     )
   }
@@ -65,7 +47,7 @@ const App = () => {
       <Notification />
       <p>
         {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
+        <button onClick={() => dispatch(logoutUser())}>logout</button>
       </p>
       <div>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
@@ -76,11 +58,10 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          handleLike={like}
-          handleRemove={handleRemove}
           showRemove={user.name === blog.user.name}
         />))
       }
+      <Users />
     </div>
   )
 }
