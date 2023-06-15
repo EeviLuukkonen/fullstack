@@ -1,25 +1,13 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import propTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog }) => {
-  const [view, setView] = useState(false)
+const Blog = ({ blogs }) => {
   const dispatch = useDispatch()
-
-  const toggleView = () => {
-    setView(!view)
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+  const id = useParams().id
+  const blog = blogs.find(blog => blog.id === id)
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Do you want to remove ${blog.title}?`)) {
@@ -29,21 +17,14 @@ const Blog = ({ blog }) => {
     dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
   }
 
-  if (!view) {
-    return (
-      <div style={blogStyle} >
-        {blog.title} {blog.author}
-        <button onClick={toggleView}>view</button>
-      </div>
-    )
+  if (!blog) {
+    return null
   }
 
   return (
-    <div style={blogStyle} className="viewBlogContent">
-      <b>Title: </b>{blog.title}
-      <button onClick={toggleView}>hide</button>
-      <br/><b>Author: </b>{blog.author}
-      <br/><b>Url: </b>{blog.url}
+    <div className="viewBlogContent">
+      <h2>{blog.title} by {blog.author}</h2>
+      <a href={blog.url}>{blog.url}</a>
       <br/><b>Added by: </b>{blog.user.name}
       <br/><b>Likes: </b>{blog.likes}
       <button id='like' onClick={() => dispatch(likeBlog(blog))}>like</button>
@@ -56,7 +37,7 @@ const Blog = ({ blog }) => {
 }
 
 Blog.propTypes = {
-  blog: propTypes.object.isRequired,
+  blogs: propTypes.array.isRequired,
 }
 
 export default Blog
