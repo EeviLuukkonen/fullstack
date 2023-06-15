@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, showRemove }) => {
+const Blog = ({ blog }) => {
   const [view, setView] = useState(false)
   const dispatch = useDispatch()
 
@@ -48,7 +48,7 @@ const Blog = ({ blog, showRemove }) => {
       <br/><b>Likes: </b>{blog.likes}
       <button id='like' onClick={() => dispatch(likeBlog(blog))}>like</button>
       <br/>
-      {showRemove && (
+      {JSON.parse(window.localStorage.getItem('loggedUser')).name === blog.user.name && (
         <button id='remove' onClick={() => handleRemove(blog)}>remove</button>
       )}
     </div>
@@ -57,7 +57,6 @@ const Blog = ({ blog, showRemove }) => {
 
 Blog.propTypes = {
   blog: propTypes.object.isRequired,
-  showRemove: propTypes.bool.isRequired
 }
 
 export default Blog
