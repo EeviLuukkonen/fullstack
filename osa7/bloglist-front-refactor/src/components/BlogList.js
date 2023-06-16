@@ -2,6 +2,7 @@ import BlogForm from '../components/BlogForm'
 import Togglable from '../components/Togglable'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const BlogList = ({ blogs }) => {
   const blogFormRef = useRef()
@@ -10,27 +11,28 @@ const BlogList = ({ blogs }) => {
     blogFormRef.current.toggleVisibility()
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
     <div>
+      <br></br>
       <h2>Blogs</h2>
-      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <Table striped>
+        <tbody>
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog => (
+            <tr key={blog.id} >
+              <td>
+                <Link to={`/blogs/${blog.id}`} className='nav-link'>{blog.title}</Link>
+              </td>
+              <td>
+                {blog.user.name}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <br></br>
+      <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
         <BlogForm toggle={toggle} />
       </Togglable>
-      <br></br>
-      {blogs.sort((a,b) => b.likes - a.likes).map(blog => (
-        <div key={blog.id} style={blogStyle}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
-      ))}
     </div>
   )
 }

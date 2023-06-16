@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Navbar, Nav, Container } from 'react-bootstrap'
 
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
@@ -14,9 +15,7 @@ import { initializeUser, logoutUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
-  const padding = {
-    padding: 5
-  }
+
 
   const dispatch = useDispatch()
 
@@ -38,23 +37,27 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
-        <Notification />
+      <div className='container'>
         <LoginForm />
+        <Notification />
       </div>
     )
   }
 
   return (
-    <div>
+    <div className='container'>
       <Router>
-        <div>
-          <Link style={padding} to='/'>Blogs</Link>
-          <Link style={padding} to='/users'>Users</Link>
-          {user.name} logged in
-          <button onClick={() => dispatch(logoutUser())}>logout</button><p></p>
-        </div>
-        <h1>Blog app</h1>
+        <Navbar bg="secondary" data-bs-theme="dark" variant='dark'>
+          <Container>
+            <Navbar.Brand>Blog app</Navbar.Brand>
+            <Nav className="me-auto">
+              <Link to="/" className="nav-link">Blogs</Link>
+              <Link to="/users" className="nav-link">Users</Link>
+              <Nav.Link to="/" disabled>{user.name} logged in</Nav.Link>
+              <button onClick={() => dispatch(logoutUser())}>Logout</button><p></p>
+            </Nav>
+          </Container>
+        </Navbar>
         <Notification />
         <Routes>
           <Route path="/users/:id" element={<User users={users} />} />
