@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom'
 import propTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useState } from 'react'
 
 const Blog = ({ blogs }) => {
+  const [comment, setComment] = useState('')
   const dispatch = useDispatch()
   const id = useParams().id
   const blog = blogs.find(blog => blog.id === id)
@@ -18,12 +20,23 @@ const Blog = ({ blogs }) => {
     }
   }
 
-  if (!blog) {
+  const handleCommentChange = (event) => {
+    setComment(event.target.value)
+  }
+
+  const submitComment = () => {
+    dispatch(commentBlog(blog, comment)).catch(() => {
+      dispatch(setNotification('Submission failed! Be sure to write a comment', 2, 'error'))
+    })
+    setComment('')
+  }
+
+  if (!blog || !blog.user || !blog.comments) {
     return null
   }
 
   return (
-    <div className="viewBlogContent">
+    <div>
       <h2>{blog.title} by {blog.author}</h2>
       <a href={blog.url}>{blog.url}</a>
       <br/><b>Added by: </b>{blog.user.name}
@@ -34,10 +47,20 @@ const Blog = ({ blogs }) => {
         <button id='remove' onClick={() => handleRemove(blog)}>remove</button>
       )}
       <h3>Comments:</h3>
-      {blog.comments.map((comment) => {
-        console.log(comment, blog.user)
-        return (<li key={comment.id}>{comment.comment}</li>)
-      })}
+      <p>
+        {blog.comments.map((comment) => (
+          <li key={comment.id}>{comment.comment}</li>
+        ))}
+      </p>
+      <form onSubmit={submitComment}>
+        <input
+          id='comment'
+          type='text'
+          value={comment}
+          onChange={handleCommentChange}
+        />
+        <button type='submit'>add comment</button>
+      </form>
     </div>
   )
 }

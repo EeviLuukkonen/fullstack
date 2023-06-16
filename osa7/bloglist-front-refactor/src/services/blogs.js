@@ -42,4 +42,13 @@ const create = async newObject => {
   return response.data
 }
 
-export default { getAll, setToken, create, likeBlog, deleteBlog }
+const commentBlog = async (blogObject, comment) => {
+  const commentObject = {
+    comment: comment
+  }
+  const url = baseUrl + '/' + blogObject.id + '/comments'
+  const response = await axios.post(url, commentObject)
+  return response.data
+}
+
+export default { getAll, setToken, create, likeBlog, deleteBlog, commentBlog }

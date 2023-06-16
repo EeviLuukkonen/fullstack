@@ -79,7 +79,7 @@ blogsRouter.put('/:id', async (request, response) => {
 blogsRouter.post('/:id/comments', async (request, response) => {
   const body = request.body
 
-  if (!body) {
+  if (!body.comment) {
     return response.status(400).json({
       error: 'empty comment'
     })
