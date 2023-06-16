@@ -1,11 +1,14 @@
 const blogsRouter = require('express').Router()
 const { request, response } = require('../app')
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog
-      .find({}).populate('user', { username: 1, name: 1 })
+      .find({})
+      .populate('user', { username: 1, name: 1 })
+      .populate('comments', { comment: 1 })
     response.json(blogs)
 })
 
@@ -51,6 +54,10 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   if (blog.user.toString() !== user.id.toString()) {
     return response.status(401).json({ error: 'blog can only be deleted by its creator' })
   }
+
+  user.blogs = user.blogs.filter(b => b.toString() !== blog.id.toString())
+  user.save()
+
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })
@@ -66,6 +73,31 @@ blogsRouter.put('/:id', async (request, response) => {
 
   await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
   response.status(200).end()
+})
+
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const body = request.body
+
+  if (!body) {
+    return response.status(400).json({
+      error: 'empty comment'
+    })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  console.log(body, blog)
+
+  const comment = new Comment({
+    comment: body.comment,
+    blog: blog
+  })
+
+  blog.comments.push(comment)
+
+  const savedBlog = await blog.save()
+  comment.save()
+  response.status(200).json(savedBlog)
 })
 
 module.exports = blogsRouter

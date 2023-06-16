@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1haWphIiwiaWQiOiI2NDhhZmMxNzU1YmQ2NzcxYjRjNGRjMzkiLCJpYXQiOjE2ODY4MzE1MjV9.YpXPLB3rGva2-vj2-Hx1KrACat6437EAdckJNYtvgK4
 
 {
-    "author": "a",
-    "title": "amen",
-    "url": "www.fi",
+    "author": "Testaaja",
+    "title": "Testi",
+    "url": "www.testi.fi",
     "likes": 0
 }

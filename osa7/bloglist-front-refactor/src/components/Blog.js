@@ -13,8 +13,9 @@ const Blog = ({ blogs }) => {
     if (window.confirm(`Do you want to remove ${blog.title}?`)) {
       dispatch(deleteBlog(blog)).catch(() => {
         dispatch(setNotification('error deleting the blog!', 2, 'error'))
-      })}
-    dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
+      })
+      dispatch(setNotification(`Blog ${blog.title} removed!`, 2, 'success'))
+    }
   }
 
   if (!blog) {
@@ -32,6 +33,11 @@ const Blog = ({ blogs }) => {
       {JSON.parse(window.localStorage.getItem('loggedUser')).name === blog.user.name && (
         <button id='remove' onClick={() => handleRemove(blog)}>remove</button>
       )}
+      <h3>Comments:</h3>
+      {blog.comments.map((comment) => {
+        console.log(comment, blog.user)
+        return (<li key={comment.id}>{comment.comment}</li>)
+      })}
     </div>
   )
 }
