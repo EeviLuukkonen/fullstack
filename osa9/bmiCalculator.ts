@@ -5,18 +5,18 @@ interface Arguments {
 }
 
 export const calculateBmi = (height: number, weight: number): string => {
-  const heightCm = height / 100
-  const bmi = weight / (heightCm * heightCm)
-  console.log(bmi)
+  const heightCm = height / 100;
+  const bmi = weight / (heightCm * heightCm);
+  console.log(bmi);
 
   if (bmi < 18.5) {
-    return "Underweight :("
+    return "Underweight :(";
   } else if (bmi >= 18.5 && bmi < 25) {
-    return "Normal range"
+    return "Normal range";
   } else {
-    return "Overweight :("
+    return "Overweight :(";
   }
-}
+};
 
 const parseArguments = (args: string[]): Arguments => {
   if (args.length < 4) throw new Error('Not enough arguments');
@@ -26,18 +26,18 @@ const parseArguments = (args: string[]): Arguments => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 if (require.main === module) {
   try {
     const { height, weight } = parseArguments(process.argv);
-    console.log(calculateBmi(height, weight))
+    console.log(calculateBmi(height, weight));
   } catch (error: unknown) {
-    let errorMessage = 'Error occurred.'
+    let errorMessage = 'Error occurred.';
     if (error instanceof Error) {
       errorMessage += ' Details: ' + error.message;
     }
