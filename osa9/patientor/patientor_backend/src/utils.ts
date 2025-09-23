@@ -1,10 +1,17 @@
 import z from "zod";
-import { Gender } from "./types";
+import { Gender, NewPatientEntry } from "./types";
 
-export const NewEntrySchema = z.object({
+export const EntrySchema = z.object({}); // empty for now
+
+export const NewPatientEntrySchema = z.object({
   name: z.string(),
   occupation: z.string(),
   gender: z.enum(Gender),
   dateOfBirth: z.iso.date(),
-  ssn: z.string()
+  ssn: z.string(),
+  entries: z.array(EntrySchema).default([])
 });
+
+export const toNewEntry = (object: unknown): NewPatientEntry => {
+  return NewPatientEntrySchema.parse(object);
+};
