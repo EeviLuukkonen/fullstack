@@ -1,7 +1,9 @@
 import z from "zod";
 import { Gender, NewPatientEntry } from "./types";
 
-export const EntrySchema = z.object({}); // empty for now
+export const EntrySchema = z.looseObject({
+  type: z.enum(["HealthCheck", "Hospital", "OccupationalHealthcare"]),
+});
 
 export const NewPatientEntrySchema = z.object({
   name: z.string(),
