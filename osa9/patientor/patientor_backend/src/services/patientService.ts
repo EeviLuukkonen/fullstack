@@ -45,7 +45,8 @@ const addEntry = (id: string, entry: NewEntry) => {
     ...entry,
   };
   patient.entries.push(newEntry);
-  return newEntry;
+  
+  return patient;
 }
 
 export default {

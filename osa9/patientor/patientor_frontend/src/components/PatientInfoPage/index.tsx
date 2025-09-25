@@ -11,6 +11,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import { Entry, HospitalEntry, OccupationalHealthcareEntry, HealthCheckEntry } from "../../types";
 import { Card, CardContent, CardHeader } from '@mui/material';
+import AddEntryForm from "./AddEntryForm";
 
 const HospitalEntryDetails = ({ entry }: { entry: HospitalEntry }) => {
   return (
@@ -96,6 +97,7 @@ const PatientInfoPage = () => {
   const id = useParams<{ id: string }>().id;
   const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -130,6 +132,9 @@ const PatientInfoPage = () => {
       </h2>
       ssn: {patient.ssn}<br/>
       occupation: {patient.occupation}
+
+      <p></p>{error && <div style={{ color: 'red' }}>{`Error: ${error}`}</div>}
+      <AddEntryForm patientId={patient.id} setPatient={setPatient} setError={setError} />
       
       <h3>Entries</h3>
 
