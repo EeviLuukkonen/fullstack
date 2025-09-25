@@ -72,9 +72,9 @@ const HealthCheckDetails = ({ entry }: { entry: HealthCheckEntry }) => {
 const HealthRateIcon = ({ rate }: { rate: 0 | 1 | 2 | 3 }) => {
   const colorMap: Record<number, "info" | "error" | "warning" | "success" > = {
     0: "success",
-    1: "warning",
-    2: "error",
-    3: "info",
+    1: "info",
+    2: "warning",
+    3: "error",
   };
 
   return <FavoriteTwoToneIcon color={colorMap[rate]} />;
@@ -134,7 +134,7 @@ const PatientInfoPage = () => {
       occupation: {patient.occupation}
 
       <p></p>{error && <div style={{ color: 'red' }}>{`Error: ${error}`}</div>}
-      <AddEntryForm patientId={patient.id} setPatient={setPatient} setError={setError} />
+      <AddEntryForm patientId={patient.id} setPatient={setPatient} setError={setError} diagnoses={diagnoses} />
       
       <h3>Entries</h3>
 
