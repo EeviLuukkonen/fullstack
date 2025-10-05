@@ -22,7 +22,6 @@ const NewBook = (props) => {
 
     const publishedInt = Number(published)
 
-    console.log({ title, publishedInt, author, genres })
     addBook({ variables: { title, publishedInt, author, genres } })
 
     setTitle('')
