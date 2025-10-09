@@ -84,19 +84,22 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      //let filtered = books
+      const filter = {};
 
-      //if (args.author) {
-      //  filtered = filtered.filter(b => b.author === args.author)
-      //}
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author });
+        if (author) {
+          filter.author = author._id;
+        } else {
+          return [];
+        }
+      }
 
-      //if (args.genre) {
-      //  filter.genres = args.genre
-      //}
+      if (args.genre) {
+        filter.genres = args.genre;
+      }
 
-      return Book.find({
-        genres: args.genre
-      })
+      return Book.find(filter).populate('author')
     },
     allAuthors: async () => Author.find({}),
     me: (root, args, context) => {

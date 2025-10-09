@@ -3,12 +3,16 @@ import { useMutation } from '@apollo/client/react'
 
 import { EDIT_AUTHOR, ALL_AUTHORS } from '../queries'
 
-const BirthyearForm = () => {
+const BirthyearForm = (props) => {
   const [name, setName] = useState('')
   const [birthyear, setBirthyear] = useState('')
 
   const [ changeYear ] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
+    refetchQueries: [ { query: ALL_AUTHORS } ],
+    onError: (error) => {
+      console.log(error)
+      props.setError(error.message)
+    }
   })
 
   const submit = async (event) => {
