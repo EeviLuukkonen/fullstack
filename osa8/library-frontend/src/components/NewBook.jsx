@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries"
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from "../queries"
 import { useMutation } from "@apollo/client/react"
+import { useSubscription } from "@apollo/client/react";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -14,6 +15,15 @@ const NewBook = (props) => {
     onError: (error) => {
       console.log(error)
       props.setError(error.message)
+    }
+  })
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data)
+      const addedBook = data.data.bookAdded
+      console.log(`${addedBook.title} added`)
+      window.alert(`New book added: ${addedBook.title}`)
     }
   })
 
